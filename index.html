@@ -1,38 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Google 搜索链接生成器 🌍</title>
-<meta name="description" content="快速生成带地区与语言参数的 Google 搜索链接，支持全球及东南亚多国。">
 <meta name="description" content="快速生成带地区、语言与时间范围参数的 Google 搜索链接。">
 <link rel="icon" href="https://www.google.com/favicon.ico">
 <style>
-body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #e8f0fe, #ffffff); display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
-  .container { background:#fff; border-radius:20px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:28px 32px; width:380px; text-align:center; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #e8f0fe, #ffffff); display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
   .container { background:#fff; border-radius:20px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:28px 32px; width:400px; text-align:center; }
-h1 { color:#1a73e8; font-size:20px; margin-bottom:20px; }
-label { display:block; margin-top:14px; text-align:left; font-weight:600; color:#333; }
-input, select { width:100%; padding:10px; margin-top:6px; border:1px solid #ccc; border-radius:10px; font-size:15px; }
-@@ -17,6 +17,7 @@
-a { display:block; margin-top:15px; word-break:break-all; color:#1a73e8; text-decoration:none; font-size:14px; }
-footer { margin-top:18px; font-size:12px; color:#777; }
-.checkbox { text-align:left; margin-top:10px; }
+  h1 { color:#1a73e8; font-size:20px; margin-bottom:20px; }
+  label { display:block; margin-top:14px; text-align:left; font-weight:600; color:#333; }
+  input, select { width:100%; padding:10px; margin-top:6px; border:1px solid #ccc; border-radius:10px; font-size:15px; }
+  button { width:100%; margin-top:18px; padding:10px; background:#1a73e8; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer; transition:0.2s; }
+  button:hover { background:#0c59cf; }
+  a { display:block; margin-top:15px; word-break:break-all; color:#1a73e8; text-decoration:none; font-size:14px; }
+  footer { margin-top:18px; font-size:12px; color:#777; }
+  .checkbox { text-align:left; margin-top:10px; }
   .date-range { display:none; margin-top:10px; }
 </style>
 </head>
 <body>
-@@ -39,7 +40,7 @@ <h1>🌍 Google 搜索链接生成器</h1>
-<option value="countryTH" data-lang="th">🇹🇭 泰国 (TH)</option>
-<option value="countryVN" data-lang="vi">🇻🇳 越南 (VN)</option>
-<option value="countryPH" data-lang="en">🇵🇭 菲律宾 (PH)</option>
-      <option value="countryID" data-lang="id">🇮🇩 印度尼西亚 (ID)</option>
-      <option value="countryID" data-lang="id">🇮🇩 印尼 (ID)</option>
-<option value="countryUS" data-lang="en">🇺🇸 美国 (US)</option>
-<option value="countryGB" data-lang="en">🇬🇧 英国 (GB)</option>
-<option value="countryCN" data-lang="zh-CN">🇨🇳 中国 (CN)</option>
-@@ -53,14 +54,36 @@ <h1>🌍 Google 搜索链接生成器</h1>
-<label><input type="checkbox" id="forceChinese"> 强制使用简体中文界面 (hl=zh-CN)</label>
-</div>
+  <div class="container">
+    <h1>🌍 Google 搜索链接生成器</h1>
 
-    <button onclick="generateLink()">生成搜索链接</button>
+    <label>搜索关键词：</label>
+    <input type="text" id="keyword" placeholder="输入搜索词，如 OpenAI 日本">
+
+    <label>指定网站（可选）：</label>
+    <input type="text" id="site" placeholder="例如：twitter.com 或 .jp">
+
+    <label>选择地区：</label>
+    <select id="region">
+      <option value="countryTW" data-lang="zh-TW">🇹🇼 台湾 (TW)</option>
+      <option value="countryHK" data-lang="zh-TW">🇭🇰 香港 (HK)</option>
+      <option value="countryJP" data-lang="ja">🇯🇵 日本 (JP)</option>
+      <option value="countrySG" data-lang="en">🇸🇬 新加坡 (SG)</option>
+      <option value="countryMY" data-lang="en">🇲🇾 马来西亚 (MY)</option>
+      <option value="countryTH" data-lang="th">🇹🇭 泰国 (TH)</option>
+      <option value="countryVN" data-lang="vi">🇻🇳 越南 (VN)</option>
+      <option value="countryPH" data-lang="en">🇵🇭 菲律宾 (PH)</option>
+      <option value="countryID" data-lang="id">🇮🇩 印尼 (ID)</option>
+      <option value="countryUS" data-lang="en">🇺🇸 美国 (US)</option>
+      <option value="countryGB" data-lang="en">🇬🇧 英国 (GB)</option>
+      <option value="countryCN" data-lang="zh-CN">🇨🇳 中国 (CN)</option>
+      <option value="countryDE" data-lang="de">🇩🇪 德国 (DE)</option>
+      <option value="countryFR" data-lang="fr">🇫🇷 法国 (FR)</option>
+      <option value="countryIN" data-lang="en">🇮🇳 印度 (IN)</option>
+      <option value="countryAU" data-lang="en">🇦🇺 澳大利亚 (AU)</option>
+    </select>
+
+    <div class="checkbox">
+      <label><input type="checkbox" id="forceChinese"> 强制使用简体中文界面 (hl=zh-CN)</label>
+    </div>
+
     <label>时间范围：</label>
     <select id="timeRange" onchange="toggleDateRange()">
       <option value="">不限</option>
@@ -51,51 +72,45 @@ footer { margin-top:18px; font-size:12px; color:#777; }
     </div>
 
     <button onclick="generateLink()">生成搜索链接</button>
-<a id="resultLink" target="_blank"></a>
+    <a id="resultLink" target="_blank"></a>
 
-<footer>© 2025 Google Region Search Generator</footer>
-</div>
+    <footer>© 2025 Google Region Search Generator</footer>
+  </div>
 
-<script>
+  <script>
     function toggleDateRange() {
       const box = document.getElementById("dateRangeBox");
       const val = document.getElementById("timeRange").value;
       box.style.display = val === "custom" ? "block" : "none";
     }
 
-function generateLink() {
-const keywordRaw = document.getElementById("keyword").value.trim();
-const siteRaw = document.getElementById("site").value.trim();
-@@ -75,30 +98,33 @@ <h1>🌍 Google 搜索链接生成器</h1>
-return;
-}
+    function generateLink() {
+      const keywordRaw = document.getElementById("keyword").value.trim();
+      const siteRaw = document.getElementById("site").value.trim();
+      const regionSelect = document.getElementById("region");
+      const regionCode = regionSelect.value;
+      const glCode = regionCode.replace('country','').toLowerCase();
+      const defaultLang = regionSelect.options[regionSelect.selectedIndex].dataset.lang || 'en';
+      const forceChinese = document.getElementById("forceChinese").checked;
 
-      // 规范 site 输入：去掉 "site:" 前缀并清理空格
-let siteClean = siteRaw.replace(/^site:\s*/i, '').trim();
-
-      // 构建未编码的 query（只在这里拼接，最后统一 encode）
-let rawQuery = keywordRaw;
-      if (siteClean) {
-        // 如果用户输入了像 ".jp" 或 "example.jp" 或 "twitter.com"，都支持
-        rawQuery += ` site:${siteClean}`;
+      if (!keywordRaw) {
+        alert("请输入关键词！");
+        return;
       }
+
+      let siteClean = siteRaw.replace(/^site:\s*/i, '').trim();
+      let rawQuery = keywordRaw;
       if (siteClean) rawQuery += ` site:${siteClean}`;
 
-      // 判断是否应忽略地区参数（若用户限定国家域名，如 ".jp"、"example.jp" 等）
-const countryTLDs = ['.jp','.sg','.th','.tw','.my','.ph','.vn','.id','.hk','.cn','.kr','.au','.de','.fr','.in'];
-const siteLower = siteClean.toLowerCase();
-const ignoreRegion = siteLower && (siteLower.startsWith('.') ||
-countryTLDs.some(ext => siteLower.endsWith(ext) || siteLower.includes(ext + '/')));
+      const countryTLDs = ['.jp','.sg','.th','.tw','.my','.ph','.vn','.id','.hk','.cn','.kr','.au','.de','.fr','.in'];
+      const siteLower = siteClean.toLowerCase();
+      const ignoreRegion = siteLower && (siteLower.startsWith('.') ||
+                         countryTLDs.some(ext => siteLower.endsWith(ext) || siteLower.includes(ext + '/')));
 
-      // 选择 hl 参数
-const hl = forceChinese ? 'zh-CN' : defaultLang;
+      const hl = forceChinese ? 'zh-CN' : defaultLang;
+      const encodedQuery = encodeURIComponent(rawQuery);
 
-      // 最终 URL（对 query 做一次编码）
-const encodedQuery = encodeURIComponent(rawQuery);
-
-let url = `https://www.google.com/search?q=${encodedQuery}&hl=${hl}`;
-      if (!ignoreRegion) {
-        url += `&cr=${regionCode}&gl=${glCode}`;
+      let url = `https://www.google.com/search?q=${encodedQuery}&hl=${hl}`;
       if (!ignoreRegion) url += `&cr=${regionCode}&gl=${glCode}`;
 
       // 时间参数
@@ -110,6 +125,12 @@ let url = `https://www.google.com/search?q=${encodedQuery}&hl=${hl}`;
           if (start) url += `,cd_min:${start}`;
           if (end) url += `,cd_max:${end}`;
         }
-}
+      }
 
-const resultLink = document.getElementById("resultLink");
+      const resultLink = document.getElementById("resultLink");
+      resultLink.href = url;
+      resultLink.textContent = url;
+    }
+  </script>
+</body>
+</html>
