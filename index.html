@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Google 搜索链接生成器 🌍</title>
-<meta name="description" content="快速生成带地区与指定网站参数的 Google 搜索链接，支持东亚与东南亚多国地区。">
+<meta name="description" content="快速生成带地区与语言参数的 Google 搜索链接，支持全球及东南亚多国。">
 <link rel="icon" href="https://www.google.com/favicon.ico">
 <style>
   body {
@@ -21,7 +21,7 @@
     border-radius: 20px;
     box-shadow: 0 4px 25px rgba(0,0,0,0.1);
     padding: 28px 32px;
-    width: 400px;
+    width: 380px;
     text-align: center;
   }
   h1 {
@@ -72,51 +72,42 @@
     font-size: 12px;
     color: #777;
   }
+  .checkbox {
+    text-align: left;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
   <div class="container">
     <h1>🌍 Google 搜索链接生成器</h1>
-
     <label>搜索关键词：</label>
     <input type="text" id="keyword" placeholder="输入搜索词，如 OpenAI 日本">
 
-    <label>指定网站 / 域名（可选）：</label>
-    <input type="text" id="site" placeholder="如 twitter.com 或 .jp，可留空">
+    <label>指定网站（可选）：</label>
+    <input type="text" id="site" placeholder="例如：twitter.com 或 .jp">
 
     <label>选择地区：</label>
     <select id="region">
-      <!-- 东亚 -->
-      <optgroup label="🇨🇳 东亚地区">
-        <option value="countryCN">🇨🇳 中国 (CN)</option>
-        <option value="countryTW">🇹🇼 台湾 (TW)</option>
-        <option value="countryHK">🇭🇰 香港 (HK)</option>
-        <option value="countryJP">🇯🇵 日本 (JP)</option>
-        <option value="countryKR">🇰🇷 韩国 (KR)</option>
-      </optgroup>
-      <!-- 东南亚 -->
-      <optgroup label="🌏 东南亚地区">
-        <option value="countrySG">🇸🇬 新加坡 (SG)</option>
-        <option value="countryMY">🇲🇾 马来西亚 (MY)</option>
-        <option value="countryID">🇮🇩 印度尼西亚 (ID)</option>
-        <option value="countryTH">🇹🇭 泰国 (TH)</option>
-        <option value="countryPH">🇵🇭 菲律宾 (PH)</option>
-        <option value="countryVN">🇻🇳 越南 (VN)</option>
-        <option value="countryKH">🇰🇭 柬埔寨 (KH)</option>
-        <option value="countryMM">🇲🇲 缅甸 (MM)</option>
-        <option value="countryBN">🇧🇳 文莱 (BN)</option>
-        <option value="countryLA">🇱🇦 老挝 (LA)</option>
-      </optgroup>
-      <!-- 其他 -->
-      <optgroup label="🌐 其他国家">
-        <option value="countryUS">🇺🇸 美国 (US)</option>
-        <option value="countryGB">🇬🇧 英国 (GB)</option>
-        <option value="countryDE">🇩🇪 德国 (DE)</option>
-        <option value="countryFR">🇫🇷 法国 (FR)</option>
-        <option value="countryIN">🇮🇳 印度 (IN)</option>
-        <option value="countryAU">🇦🇺 澳大利亚 (AU)</option>
-      </optgroup>
+      <option value="countryTW" data-lang="zh-TW">🇹🇼 台湾 (TW)</option>
+      <option value="countryHK" data-lang="zh-TW">🇭🇰 香港 (HK)</option>
+      <option value="countryJP" data-lang="ja">🇯🇵 日本 (JP)</option>
+      <option value="countrySG" data-lang="en">🇸🇬 新加坡 (SG)</option>
+      <option value="countryMY" data-lang="en">🇲🇾 马来西亚 (MY)</option>
+      <option value="countryTH" data-lang="th">🇹🇭 泰国 (TH)</option>
+      <option value="countryVN" data-lang="vi">🇻🇳 越南 (VN)</option>
+      <option value="countryPH" data-lang="en">🇵🇭 菲律宾 (PH)</option>
+      <option value="countryID" data-lang="id">🇮🇩 印度尼西亚 (ID)</option>
+      <option value="countryUS" data-lang="en">🇺🇸 美国 (US)</option>
+      <option value="countryGB" data-lang="en">🇬🇧 英国 (GB)</option>
+      <option value="countryCN" data-lang="zh-CN">🇨🇳 中国 (CN)</option>
     </select>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="forceChinese"> 强制使用简体中文界面 (hl=zh-CN)
+      </label>
+    </div>
 
     <button onclick="generateLink()">生成搜索链接</button>
 
@@ -127,20 +118,36 @@
 
   <script>
     function generateLink() {
-      const keyword = document.getElementById("keyword").value.trim();
+      const keyword = encodeURIComponent(document.getElementById("keyword").value.trim());
       const site = document.getElementById("site").value.trim();
-      const region = document.getElementById("region").value;
+      const region = document.getElementById("region");
+      const regionCode = region.value;
+      const glCode = regionCode.replace('country', '').toLowerCase();
+      const defaultLang = region.options[region.selectedIndex].dataset.lang;
+      const useChinese = document.getElementById("forceChinese").checked;
 
       if (!keyword) {
         alert("请输入关键词！");
         return;
       }
 
-      const siteQuery = site ? ` site:${site.replace(/^site:/, '')}` : '';
-      const fullQuery = encodeURIComponent(keyword + siteQuery);
-      const glCode = region.replace('country', '').toLowerCase();
+      // 构建搜索词
+      let query = keyword;
+      if (site) query += ` site:${site}`;
 
-      const url = `https://www.google.com/search?q=${fullQuery}&cr=${region}&gl=${glCode}`;
+      // 选择界面语言
+      const hl = useChinese ? "zh-CN" : defaultLang;
+
+      // 如果指定网站是国家域名（如 .jp/.sg/.th），自动忽略地区参数
+      const countryDomains = [".jp",".sg",".th",".tw",".my",".ph",".vn",".id",".hk"];
+      const ignoreRegion = countryDomains.some(ext => site.endsWith(ext));
+
+      let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      if (!ignoreRegion) {
+        url += `&cr=${regionCode}&gl=${glCode}`;
+      }
+      url += `&hl=${hl}`;
+
       const resultLink = document.getElementById("resultLink");
       resultLink.href = url;
       resultLink.textContent = url;
