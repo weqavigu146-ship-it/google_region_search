@@ -140,7 +140,7 @@
       const fullQuery = encodeURIComponent(keyword + siteQuery);
       const glCode = region.replace('country', '').toLowerCase();
 
-      const url = `https://www.google.com/search?q=${fullQuery}&cr=${region}&gl=${glCode}&hl=zh-CN`;
+      const url = `https://www.google.com/search?q=${fullQuery}&cr=${region}&gl=${glCode}`;
       const resultLink = document.getElementById("resultLink");
       resultLink.href = url;
       resultLink.textContent = url;
