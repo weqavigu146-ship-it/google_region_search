@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google 搜索链接生成器 🌍</title>
+<meta name="description" content="快速生成带地区与指定网站参数的 Google 搜索链接，支持多国地区与自定义网站。">
+<link rel="icon" href="https://www.google.com/favicon.ico">
+<style>
+  body {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #e8f0fe, #ffffff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+    padding: 28px 32px;
+    width: 380px;
+    text-align: center;
+  }
+  h1 {
+    color: #1a73e8;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-top: 14px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+  }
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+  button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 10px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button:hover {
+    background: #0c59cf;
+  }
+  a {
+    display: block;
+    margin-top: 15px;
+    word-break: break-all;
+    color: #1a73e8;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  footer {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #777;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌍 Google 搜索链接生成器</h1>
+
+    <label>搜索关键词：</label>
+    <input type="text" id="keyword" placeholder="输入搜索词，如 OpenAI 日本">
+
+    <label>指定网站 / 域名（可选）：</label>
+    <input type="text" id="site" placeholder="如 twitter.com 或 .jp，可留空">
+
+    <label>选择地区：</label>
+    <select id="region">
+      <option value="countryJP">🇯🇵 日本 (JP)</option>
+      <option value="countryUS">🇺🇸 美国 (US)</option>
+      <option value="countryTW">🇹🇼 台湾 (TW)</option>
+      <option value="countryHK">🇭🇰 香港 (HK)</option>
+      <option value="countrySG">🇸🇬 新加坡 (SG)</option>
+      <option value="countryKR">🇰🇷 韩国 (KR)</option>
+      <option value="countryCN">🇨🇳 中国 (CN)</option>
+      <option value="countryGB">🇬🇧 英国 (GB)</option>
+      <option value="countryDE">🇩🇪 德国 (DE)</option>
+    </select>
+
+    <button onclick="generateLink()">生成搜索链接</button>
+
+    <a id="resultLink" target="_blank"></a>
+
+    <footer>© 2025 Google Region Search Generator</footer>
+  </div>
+
+  <script>
+    function generateLink() {
+      const keyword = document.getElementById("keyword").value.trim();
+      const site = document.getElementById("site").value.trim();
+      const region = document.getElementById("region").value;
+
+      if (!keyword) {
+        alert("请输入关键词！");
+        return;
+      }
+
+      const siteQuery = site ? ` site:${site.replace(/^site:/, '')}` : '';
+      const fullQuery = encodeURIComponent(keyword + siteQuery);
+      const glCode = region.replace('country', '').toLowerCase();
+
+      const url = `https://www.google.com/search?q=${fullQuery}&cr=${region}&gl=${glCode}&hl=zh-CN`;
+      const resultLink = document.getElementById("resultLink");
+      resultLink.href = url;
+      resultLink.textContent = url;
+    }
+  </script>
+</body>
+</html>
