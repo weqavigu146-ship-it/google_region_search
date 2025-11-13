@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Google 搜索链接生成器 🌍</title>
-<meta name="description" content="快速生成带地区与指定网站参数的 Google 搜索链接，支持多国地区与自定义网站。">
+<meta name="description" content="快速生成带地区与指定网站参数的 Google 搜索链接，支持东亚与东南亚多国地区。">
 <link rel="icon" href="https://www.google.com/favicon.ico">
 <style>
   body {
@@ -21,7 +21,7 @@
     border-radius: 20px;
     box-shadow: 0 4px 25px rgba(0,0,0,0.1);
     padding: 28px 32px;
-    width: 380px;
+    width: 400px;
     text-align: center;
   }
   h1 {
@@ -86,15 +86,36 @@
 
     <label>选择地区：</label>
     <select id="region">
-      <option value="countryJP">🇯🇵 日本 (JP)</option>
-      <option value="countryUS">🇺🇸 美国 (US)</option>
-      <option value="countryTW">🇹🇼 台湾 (TW)</option>
-      <option value="countryHK">🇭🇰 香港 (HK)</option>
-      <option value="countrySG">🇸🇬 新加坡 (SG)</option>
-      <option value="countryKR">🇰🇷 韩国 (KR)</option>
-      <option value="countryCN">🇨🇳 中国 (CN)</option>
-      <option value="countryGB">🇬🇧 英国 (GB)</option>
-      <option value="countryDE">🇩🇪 德国 (DE)</option>
+      <!-- 东亚 -->
+      <optgroup label="🇨🇳 东亚地区">
+        <option value="countryCN">🇨🇳 中国 (CN)</option>
+        <option value="countryTW">🇹🇼 台湾 (TW)</option>
+        <option value="countryHK">🇭🇰 香港 (HK)</option>
+        <option value="countryJP">🇯🇵 日本 (JP)</option>
+        <option value="countryKR">🇰🇷 韩国 (KR)</option>
+      </optgroup>
+      <!-- 东南亚 -->
+      <optgroup label="🌏 东南亚地区">
+        <option value="countrySG">🇸🇬 新加坡 (SG)</option>
+        <option value="countryMY">🇲🇾 马来西亚 (MY)</option>
+        <option value="countryID">🇮🇩 印度尼西亚 (ID)</option>
+        <option value="countryTH">🇹🇭 泰国 (TH)</option>
+        <option value="countryPH">🇵🇭 菲律宾 (PH)</option>
+        <option value="countryVN">🇻🇳 越南 (VN)</option>
+        <option value="countryKH">🇰🇭 柬埔寨 (KH)</option>
+        <option value="countryMM">🇲🇲 缅甸 (MM)</option>
+        <option value="countryBN">🇧🇳 文莱 (BN)</option>
+        <option value="countryLA">🇱🇦 老挝 (LA)</option>
+      </optgroup>
+      <!-- 其他 -->
+      <optgroup label="🌐 其他国家">
+        <option value="countryUS">🇺🇸 美国 (US)</option>
+        <option value="countryGB">🇬🇧 英国 (GB)</option>
+        <option value="countryDE">🇩🇪 德国 (DE)</option>
+        <option value="countryFR">🇫🇷 法国 (FR)</option>
+        <option value="countryIN">🇮🇳 印度 (IN)</option>
+        <option value="countryAU">🇦🇺 澳大利亚 (AU)</option>
+      </optgroup>
     </select>
 
     <button onclick="generateLink()">生成搜索链接</button>
