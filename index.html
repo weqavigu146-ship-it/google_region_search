@@ -7,80 +7,22 @@
 <meta name="description" content="快速生成带地区与语言参数的 Google 搜索链接，支持全球及东南亚多国。">
 <link rel="icon" href="https://www.google.com/favicon.ico">
 <style>
-  body {
-    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(135deg, #e8f0fe, #ffffff);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  .container {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
-    padding: 28px 32px;
-    width: 380px;
-    text-align: center;
-  }
-  h1 {
-    color: #1a73e8;
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-  label {
-    display: block;
-    margin-top: 14px;
-    text-align: left;
-    font-weight: 600;
-    color: #333;
-  }
-  input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 15px;
-  }
-  button {
-    width: 100%;
-    margin-top: 18px;
-    padding: 10px;
-    background: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  button:hover {
-    background: #0c59cf;
-  }
-  a {
-    display: block;
-    margin-top: 15px;
-    word-break: break-all;
-    color: #1a73e8;
-    text-decoration: none;
-    font-size: 14px;
-  }
-  footer {
-    margin-top: 18px;
-    font-size: 12px;
-    color: #777;
-  }
-  .checkbox {
-    text-align: left;
-    margin-top: 10px;
-  }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #e8f0fe, #ffffff); display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+  .container { background:#fff; border-radius:20px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:28px 32px; width:380px; text-align:center; }
+  h1 { color:#1a73e8; font-size:20px; margin-bottom:20px; }
+  label { display:block; margin-top:14px; text-align:left; font-weight:600; color:#333; }
+  input, select { width:100%; padding:10px; margin-top:6px; border:1px solid #ccc; border-radius:10px; font-size:15px; }
+  button { width:100%; margin-top:18px; padding:10px; background:#1a73e8; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer; transition:0.2s; }
+  button:hover { background:#0c59cf; }
+  a { display:block; margin-top:15px; word-break:break-all; color:#1a73e8; text-decoration:none; font-size:14px; }
+  footer { margin-top:18px; font-size:12px; color:#777; }
+  .checkbox { text-align:left; margin-top:10px; }
 </style>
 </head>
 <body>
   <div class="container">
     <h1>🌍 Google 搜索链接生成器</h1>
+
     <label>搜索关键词：</label>
     <input type="text" id="keyword" placeholder="输入搜索词，如 OpenAI 日本">
 
@@ -101,12 +43,14 @@
       <option value="countryUS" data-lang="en">🇺🇸 美国 (US)</option>
       <option value="countryGB" data-lang="en">🇬🇧 英国 (GB)</option>
       <option value="countryCN" data-lang="zh-CN">🇨🇳 中国 (CN)</option>
+      <option value="countryDE" data-lang="de">🇩🇪 德国 (DE)</option>
+      <option value="countryFR" data-lang="fr">🇫🇷 法国 (FR)</option>
+      <option value="countryIN" data-lang="en">🇮🇳 印度 (IN)</option>
+      <option value="countryAU" data-lang="en">🇦🇺 澳大利亚 (AU)</option>
     </select>
 
     <div class="checkbox">
-      <label>
-        <input type="checkbox" id="forceChinese"> 强制使用简体中文界面 (hl=zh-CN)
-      </label>
+      <label><input type="checkbox" id="forceChinese"> 强制使用简体中文界面 (hl=zh-CN)</label>
     </div>
 
     <button onclick="generateLink()">生成搜索链接</button>
@@ -118,35 +62,44 @@
 
   <script>
     function generateLink() {
-      const keyword = encodeURIComponent(document.getElementById("keyword").value.trim());
-      const site = document.getElementById("site").value.trim();
-      const region = document.getElementById("region");
-      const regionCode = region.value;
-      const glCode = regionCode.replace('country', '').toLowerCase();
-      const defaultLang = region.options[region.selectedIndex].dataset.lang;
-      const useChinese = document.getElementById("forceChinese").checked;
+      const keywordRaw = document.getElementById("keyword").value.trim();
+      const siteRaw = document.getElementById("site").value.trim();
+      const regionSelect = document.getElementById("region");
+      const regionCode = regionSelect.value;
+      const glCode = regionCode.replace('country','').toLowerCase();
+      const defaultLang = regionSelect.options[regionSelect.selectedIndex].dataset.lang || 'en';
+      const forceChinese = document.getElementById("forceChinese").checked;
 
-      if (!keyword) {
+      if (!keywordRaw) {
         alert("请输入关键词！");
         return;
       }
 
-      // 构建搜索词
-      let query = keyword;
-      if (site) query += ` site:${site}`;
+      // 规范 site 输入：去掉 "site:" 前缀并清理空格
+      let siteClean = siteRaw.replace(/^site:\s*/i, '').trim();
 
-      // 选择界面语言
-      const hl = useChinese ? "zh-CN" : defaultLang;
+      // 构建未编码的 query（只在这里拼接，最后统一 encode）
+      let rawQuery = keywordRaw;
+      if (siteClean) {
+        // 如果用户输入了像 ".jp" 或 "example.jp" 或 "twitter.com"，都支持
+        rawQuery += ` site:${siteClean}`;
+      }
 
-      // 如果指定网站是国家域名（如 .jp/.sg/.th），自动忽略地区参数
-      const countryDomains = [".jp",".sg",".th",".tw",".my",".ph",".vn",".id",".hk"];
-      const ignoreRegion = countryDomains.some(ext => site.endsWith(ext));
+      // 判断是否应忽略地区参数（若用户限定国家域名，如 ".jp"、"example.jp" 等）
+      const countryTLDs = ['.jp','.sg','.th','.tw','.my','.ph','.vn','.id','.hk','.cn','.kr','.au','.de','.fr','.in'];
+      const siteLower = siteClean.toLowerCase();
+      const ignoreRegion = siteLower && (siteLower.startsWith('.') ||
+                         countryTLDs.some(ext => siteLower.endsWith(ext) || siteLower.includes(ext + '/')));
 
-      let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      // 选择 hl 参数
+      const hl = forceChinese ? 'zh-CN' : defaultLang;
+
+      // 最终 URL（对 query 做一次编码）
+      const encodedQuery = encodeURIComponent(rawQuery);
+      let url = `https://www.google.com/search?q=${encodedQuery}&hl=${hl}`;
       if (!ignoreRegion) {
         url += `&cr=${regionCode}&gl=${glCode}`;
       }
-      url += `&hl=${hl}`;
 
       const resultLink = document.getElementById("resultLink");
       resultLink.href = url;
